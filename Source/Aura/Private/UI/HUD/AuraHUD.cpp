@@ -32,7 +32,12 @@ void AAuraHUD::InitOverlay(APlayerController* PC, APlayerState* PS, UAbilitySyst
     // Construct the widget
     OverlayWidget = Cast<UAuraUserWidget>(CreateWidget<UUserWidget>(GetWorld(), OverlayWidgetClass));
 
-    // Set the widget's widget controller and add to the viewport
+    // Set the widget's controller
     OverlayWidget->SetWidgetController(WidgetController);
+
+    // Initialize player's ability values. This should be called after the widget has had it's controller set.
+    WidgetController->BroadcastInitialValues();
+
+    // Show the UI
     OverlayWidget->AddToViewport();
 }
