@@ -15,3 +15,8 @@ void UAuraWidgetController::BroadcastInitialValues()
 {
     // This function is implimented by classes that are derived from UAuraWidgetController
 }
+
+void UAuraWidgetController::BindCallbacksToDependencies()
+{
+    // This function is implimented by classes that are derived from UAuraWidgetController
+}
