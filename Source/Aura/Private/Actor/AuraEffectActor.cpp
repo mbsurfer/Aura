@@ -3,48 +3,48 @@
 
 #include "Actor/AuraEffectActor.h"
 
+#include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemInterface.h"
-#include "AbilitySystem/AuraAttributeSet.h"
-#include "Components/SphereComponent.h"
-#include "Components/StaticMeshComponent.h"
 
 AAuraEffectActor::AAuraEffectActor()
 {
 	PrimaryActorTick.bCanEverTick = false;
 
-	Mesh = CreateDefaultSubobject<UStaticMeshComponent>("Mesh");
-	SetRootComponent(Mesh);
-
-	Sphere = CreateDefaultSubobject<USphereComponent>("Sphere");
-	Sphere->SetupAttachment(GetRootComponent());
+	SetRootComponent(CreateDefaultSubobject<USceneComponent>("Scene Root"));
 }
 
 void AAuraEffectActor::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	Sphere->OnComponentBeginOverlap.AddDynamic(this, &AAuraEffectActor::OnOverlap);
-	Sphere->OnComponentEndOverlap.AddDynamic(this, &AAuraEffectActor::EndOverlap);
 }
 
-
-void AAuraEffectActor::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void AAuraEffectActor::ApplyEffectToTarget(AActor* Target, TSubclassOf<UGameplayEffect> GameplayEffectClass)
 {
-	//TODO: Change this to apply a GameplayEffect. For now, this is a HACK for testing!
-	if (IAbilitySystemInterface* ASCInterface = Cast<IAbilitySystemInterface>(OtherActor))
+	// User helper function provided by UAbilitySystemBlueprintLibrary to get the Ability System Component form the target Actor
+	UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(Target);
+
+	// If the target actor has not implimented an ASC, do nothing
+	if (!TargetASC)
 	{
-		const UAuraAttributeSet* AuraAttributeSet = Cast<UAuraAttributeSet>(ASCInterface->GetAbilitySystemComponent()->GetAttributeSet(UAuraAttributeSet::StaticClass()));
-		
-		UAuraAttributeSet* MutableAuarAttributeSet = const_cast<UAuraAttributeSet*>(AuraAttributeSet);
-		MutableAuarAttributeSet->SetHealth(AuraAttributeSet->GetHealth() + 25.f);
-		MutableAuarAttributeSet->SetMana(AuraAttributeSet->GetMana() - 10.f);
-		Destroy();
+		return;
 	}
-}
 
+	// We have problems if the GameplayEffectClass has not been set and should abort
+	check(GameplayEffectClass)
 
-void AAuraEffectActor::EndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
-{
+	// What is a GameplayEffectContextHandle??
+	// A lightweight wrapper that stores the GameplayEffectContext as a prt called Data.
+	// Mostly consists of helper functions when dealing with the context.
+	FGameplayEffectContextHandle GameplayEffectContextHandle = TargetASC->MakeEffectContext();
 
+	// Remember what applied this effect
+	GameplayEffectContextHandle.AddSourceObject(this);
+
+	// FGameplayEffectSpecHandle is another type of wrapper that holds and EffectSpec.
+	// Also contains a data member that stores the actual struct.
+	FGameplayEffectSpecHandle EffectSpecHandle = TargetASC->MakeOutgoingSpec(GameplayEffectClass, 1.f, GameplayEffectContextHandle);
+
+	// Remember to derefrence the EffectSpec pointer!
+	TargetASC->ApplyGameplayEffectSpecToSelf(*EffectSpecHandle.Data.Get());
 }
