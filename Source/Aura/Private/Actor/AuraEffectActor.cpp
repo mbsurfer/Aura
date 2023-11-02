@@ -42,7 +42,7 @@ void AAuraEffectActor::ApplyEffectToTarget(AActor* TargetActor, FGameplayEffectP
 
 	// FGameplayEffectSpecHandle is another type of wrapper that holds and EffectSpec.
 	// Also contains a data member that stores the actual struct.
-	const FGameplayEffectSpecHandle EffectSpecHandle = TargetASC->MakeOutgoingSpec(GameplayEffect.GameplayEffectClass, 1.f, GameplayEffectContextHandle);
+	const FGameplayEffectSpecHandle EffectSpecHandle = TargetASC->MakeOutgoingSpec(GameplayEffect.GameplayEffectClass, ActorLevel, GameplayEffectContextHandle);
 
 	// Remember to derefrence the EffectSpec pointer!
 	FActiveGameplayEffectHandle ActiveEffectHandle = TargetASC->ApplyGameplayEffectSpecToSelf(*EffectSpecHandle.Data.Get());
