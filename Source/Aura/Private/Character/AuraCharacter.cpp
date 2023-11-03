@@ -4,6 +4,7 @@
 #include "Character/AuraCharacter.h"
 
 #include "AbilitySystemComponent.h"
+#include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "Player/AuraPlayerController.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "UI/HUD/AuraHUD.h"
@@ -48,6 +49,8 @@ void AAuraCharacter::InitAbilityActorInfo()
 
     check(AbilitySystemComponent);
     AbilitySystemComponent->InitAbilityActorInfo(AuraPlayerState, this);
+
+    Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent)->AbilityActorInfoSet();
 
     // Only continue on the client of the controlling player
     if (AAuraPlayerController* AuraPlayerController = Cast<AAuraPlayerController>(GetController()))

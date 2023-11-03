@@ -28,5 +28,9 @@ UAttributeSet* AAuraCharacterBase::GetAttributeSet() const
 void AAuraCharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
+}
+
+void AAuraCharacterBase::InitAbilityActorInfo()
+{
 	
 }
