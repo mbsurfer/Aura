@@ -33,7 +33,7 @@ void UOverlayWidgetController::BindCallbacksToDependencies()
     const UAuraAttributeSet* AuraAttributeSet = CastChecked<UAuraAttributeSet>(AttributeSet);
 
     // ----------------------------------------------------------------------------------------------------------------
-	// Vital Attribute
+	// Vital Attributes
 	// ----------------------------------------------------------------------------------------------------------------
 
 	/** Health */
