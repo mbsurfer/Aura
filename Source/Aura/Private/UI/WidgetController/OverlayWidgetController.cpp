@@ -16,7 +16,7 @@ void UOverlayWidgetController::BroadcastInitialValues()
     OnMaxManaChanged.Broadcast(AuraAttributeSet->GetMaxMana());
 }
 
-void UOverlayWidgetController::BindAttributeChangeBroadcast(const FGameplayAttribute& Attribute, FOnAttributeChangedSignature* AttributeChangeDelegate)
+void UOverlayWidgetController::BindToAttributeValueChangeDelegate(const FGameplayAttribute& Attribute, FOnAttributeChangedSignature* AttributeChangeDelegate)
 {
     AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(Attribute).AddLambda(
         [AttributeChangeDelegate](const FOnAttributeChangeData& Data)
@@ -37,16 +37,16 @@ void UOverlayWidgetController::BindCallbacksToDependencies()
 	// ----------------------------------------------------------------------------------------------------------------
 
 	/** Health */
-    BindAttributeChangeBroadcast(AuraAttributeSet->GetHealthAttribute(), &OnHealthChanged);
+    BindToAttributeValueChangeDelegate(AuraAttributeSet->GetHealthAttribute(), &OnHealthChanged);
 
     /** Max Health */
-    BindAttributeChangeBroadcast(AuraAttributeSet->GetMaxHealthAttribute(), &OnMaxHealthChanged);
+    BindToAttributeValueChangeDelegate(AuraAttributeSet->GetMaxHealthAttribute(), &OnMaxHealthChanged);
 
     /** Mana */
-    BindAttributeChangeBroadcast(AuraAttributeSet->GetManaAttribute(), &OnManaChanged);
+    BindToAttributeValueChangeDelegate(AuraAttributeSet->GetManaAttribute(), &OnManaChanged);
 
     // /** Max Mana */
-    BindAttributeChangeBroadcast(AuraAttributeSet->GetMaxManaAttribute(), &OnMaxManaChanged);
+    BindToAttributeValueChangeDelegate(AuraAttributeSet->GetMaxManaAttribute(), &OnMaxManaChanged);
 
     // ----------------------------------------------------------------------------------------------------------------
 	// Assets Tags
@@ -57,10 +57,16 @@ void UOverlayWidgetController::BindCallbacksToDependencies()
         {
             for (const auto Tag : AssetTags)
             {
-                UE_LOG(LogTemp, Display, TEXT("tag: %s"), *Tag.ToString());
+                UE_LOG(LogTemp, Warning, TEXT("Source Tag: %s"), *Tag.ToString());
 
-                FUIWidgetRow* Row = GetDataTableRowByTag<FUIWidgetRow>(MessageWudgetDataTable, Tag);
-                MessageWidgetRowDelegate.Broadcast(*Row);
+                // "A.1".MatchesTag("A") = True
+                // "A".Matches("A.1")    = False
+                const FGameplayTag MessageTag = FGameplayTag::RequestGameplayTag(FName("Message"));
+                if (Tag.MatchesTag(MessageTag))
+                {
+                    const FUIWidgetRow* Row = GetDataTableRowByTag<FUIWidgetRow>(MessageWudgetDataTable, Tag);
+                    MessageWidgetRowDelegate.Broadcast(*Row);
+                }
             }
         }
     );

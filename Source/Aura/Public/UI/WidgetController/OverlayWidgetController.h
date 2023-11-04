@@ -71,7 +71,7 @@ protected:
 
 private:
 
-	void BindAttributeChangeBroadcast(const FGameplayAttribute& Attribute, FOnAttributeChangedSignature* AttributeChangeDelegate);
+	void BindToAttributeValueChangeDelegate(const FGameplayAttribute& Attribute, FOnAttributeChangedSignature* AttributeChangeDelegate);
 
 };
 
