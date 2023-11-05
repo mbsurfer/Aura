@@ -31,13 +31,13 @@ struct FGameplayEffectParams
 
 	FGameplayEffectParams() {}
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Applied Effects");
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Applied Effects");
 	TSubclassOf<UGameplayEffect> GameplayEffectClass;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Applied Effects");
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Applied Effects");
 	EEffectApplicationPolicy GameplayEffectApplicationPolicy;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Applied Effects");
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Applied Effects");
 	EEffectRemovalPolicy GameplayEffectRemovalPolicy;
 };
 
