@@ -9,10 +9,8 @@
 
 UAuraAttributeSet::UAuraAttributeSet()
 {
-    InitHealth(150.f);
-    InitMaxHealth(200.f);
-    InitMana(0.f);
-    InitMaxMana(100.f);
+    InitHealth(10.f);
+    InitMana(10.f);
 }
 
 void UAuraAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const 
@@ -22,6 +20,7 @@ void UAuraAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Ou
     // ----------------------------------------------------------------------------------------------------------------
 	// Primary Attributes
 	// ----------------------------------------------------------------------------------------------------------------
+
     DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSet, Strength, COND_None, REPNOTIFY_Always);
     DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSet, Intelligence, COND_None, REPNOTIFY_Always);
     DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSet, Resilience, COND_None, REPNOTIFY_Always);
@@ -30,6 +29,7 @@ void UAuraAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Ou
     // ----------------------------------------------------------------------------------------------------------------
 	// Secondary Attributes
 	// ----------------------------------------------------------------------------------------------------------------
+
     DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSet, Armor, COND_None, REPNOTIFY_Always);
     DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSet, ArmorPenetration, COND_None, REPNOTIFY_Always);
     DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSet, BlockChance, COND_None, REPNOTIFY_Always);
@@ -44,25 +44,10 @@ void UAuraAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Ou
     // ----------------------------------------------------------------------------------------------------------------
 	// Vital Attributes
 	// ----------------------------------------------------------------------------------------------------------------
+
     DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSet, Health, COND_None, REPNOTIFY_Always);
     DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSet, Mana, COND_None, REPNOTIFY_Always);
 }
-
-// Epic recommends to only use this function when doing clamping (the process of limiting a value to a range between a minimum and a maximum value).
-void UAuraAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue)
-{
-    Super::PreAttributeChange(Attribute, NewValue);
-
-    if (Attribute == GetHealthAttribute())
-    {
-        NewValue = FMath::Clamp(NewValue, 0.f, GetMaxHealth());
-    }
-    else if (Attribute == GetManaAttribute())
-    {
-        NewValue = FMath::Clamp(NewValue, 0.f, GetMaxMana());
-    }
-}
-
 
 void UAuraAttributeSet::SetEffectProperties(const FGameplayEffectModCallbackData &Data, FEffectProperties& Props) const
 {
@@ -107,6 +92,7 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffectMo
     FEffectProperties Props;
     SetEffectProperties(Data, Props);
 
+    // Make sure health and mana do not exceed max values
     if (Data.EvaluatedData.Attribute == GetHealthAttribute())
     {
         SetHealth(FMath::Clamp(GetHealth(), 0.f, GetMaxHealth()));
