@@ -11,7 +11,29 @@
 	],
 	"settings": {
 		"typescript.tsc.autoDetect": "off",
-		"npm.autoDetect": "off"
+		"npm.autoDetect": "off",
+		"files.associations": {
+			"bitset": "cpp",
+			"regex": "cpp",
+			"system_error": "cpp",
+			"typeindex": "cpp",
+			"typeinfo": "cpp",
+			"array": "cpp",
+			"deque": "cpp",
+			"filesystem": "cpp",
+			"format": "cpp",
+			"forward_list": "cpp",
+			"iosfwd": "cpp",
+			"iterator": "cpp",
+			"list": "cpp",
+			"ranges": "cpp",
+			"span": "cpp",
+			"vector": "cpp",
+			"xlocale": "cpp",
+			"xstring": "cpp",
+			"xtree": "cpp",
+			"xutility": "cpp"
+		}
 	},
 	"extensions": {
 		"recommendations": [
