@@ -45,7 +45,7 @@ int32 AAuraEnemy::GetPlayerLevel()
 void AAuraEnemy::BeginPlay()
 {
     Super::BeginPlay();
-    AbilitySystemComponent->InitAbilityActorInfo(this, this);
+    InitAbilityActorInfo();
 }
 
 void AAuraEnemy::InitAbilityActorInfo()
