@@ -10,6 +10,9 @@
 
 UAuraAttributeSet::UAuraAttributeSet()
 {
+
+    //todo: see Frank's comment in lecture 95 to move this into our DataAsset layer
+
     const FAuraGameplayTags& GameplayTags = FAuraGameplayTags::Get();
 
     TagsToAttributes.Add(GameplayTags.Attributes_Primary_Strength, GetStrengthAttribute);
