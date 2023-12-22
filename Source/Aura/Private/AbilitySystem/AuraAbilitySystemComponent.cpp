@@ -11,7 +11,6 @@ void UAuraAbilitySystemComponent::AbilityActorInfoSet()
     OnGameplayEffectAppliedDelegateToSelf.AddUObject(this, &UAuraAbilitySystemComponent::EffectApplied);
 }
 
-
 void UAuraAbilitySystemComponent::EffectApplied(UAbilitySystemComponent* ASC, const FGameplayEffectSpec& EffectSpec, FActiveGameplayEffectHandle ActiveEffectHandle)
 {
 	// Broadcast gameplay effect tags to the widget controller
@@ -20,3 +19,11 @@ void UAuraAbilitySystemComponent::EffectApplied(UAbilitySystemComponent* ASC, co
     EffectAssetTags.Broadcast(TagContainer);
 }
 
+void UAuraAbilitySystemComponent::AddCharacterAbilities(const TArray<TSubclassOf<UGameplayAbility>>& StartupAbilities)
+{
+    for (TSubclassOf<UGameplayAbility> AbilityClass : StartupAbilities)
+    {
+        FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(AbilityClass, 1);
+        GiveAbilityAndActivateOnce(AbilitySpec);
+    }
+}
