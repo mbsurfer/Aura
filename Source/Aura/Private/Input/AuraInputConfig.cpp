@@ -1,8 +1,9 @@
 
 
 
-#include "InputAction.h"
 #include "Input/AuraInputConfig.h"
+
+#include "InputAction.h"
 
 
 const UInputAction* UAuraInputConfig::FindAbilityInputActionForTag(const FGameplayTag& InputTag, bool bLogNotFound)
