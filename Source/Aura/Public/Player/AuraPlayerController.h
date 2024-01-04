@@ -81,4 +81,6 @@ private:
 	// Generate a smooth path for the character to follow
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USplineComponent> Spline;
+
+	void AutoRun();
 };
