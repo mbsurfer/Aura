@@ -15,6 +15,7 @@ struct FInputActionValue;
 class IEnemyInterface;
 class UAuraInputConfig;
 class UAuraAbilitySystemComponent;
+class USplineComponent;
 
 /**
  * 
@@ -56,4 +57,28 @@ private:
 	TObjectPtr<UAuraAbilitySystemComponent> AuraAbilitySystemComponent;
 
 	UAuraAbilitySystemComponent* GetASC();
+
+	//
+	// The following variables help with character movement
+	//
+	
+	// Track where the player intends to move
+	FVector CachedDestination = FVector::ZeroVector;
+	
+	// How long the character has been following the cursor 
+	float FollowTime = 0.f;
+	
+	// Differentiate a click vs a click and hold to move
+	float ShortPressedThreshold = 0.5f;
+	
+	bool bAutoRunning = false;
+	bool bTargeting = false;
+
+	// How close should the character get to the destination before stopping
+	UPROPERTY(EditDefaultsOnly)
+	float AutoRunAcceptanceRadius = 50.f;
+
+	// Generate a smooth path for the character to follow
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<USplineComponent> Spline;
 };
