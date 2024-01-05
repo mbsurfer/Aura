@@ -4,15 +4,15 @@
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 
 #include "AuraGameplayTags.h"
-#include "AbilitySystem/AuraGameplayAbility.h"
+#include "AbilitySystem/Abilities/AuraGameplayAbility.h"
 
 
 void UAuraAbilitySystemComponent::AbilityActorInfoSet()
 {
-    OnGameplayEffectAppliedDelegateToSelf.AddUObject(this, &UAuraAbilitySystemComponent::EffectApplied);
+    OnGameplayEffectAppliedDelegateToSelf.AddUObject(this, &UAuraAbilitySystemComponent::ClientEffectApplied);
 }
 
-void UAuraAbilitySystemComponent::EffectApplied(UAbilitySystemComponent* ASC, const FGameplayEffectSpec& EffectSpec, FActiveGameplayEffectHandle ActiveEffectHandle)
+void UAuraAbilitySystemComponent::ClientEffectApplied_Implementation(UAbilitySystemComponent* ASC, const FGameplayEffectSpec& EffectSpec, FActiveGameplayEffectHandle ActiveEffectHandle)
 {
 	// Broadcast gameplay effect tags to the widget controller
     FGameplayTagContainer TagContainer;
