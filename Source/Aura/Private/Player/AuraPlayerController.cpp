@@ -90,28 +90,20 @@ void AAuraPlayerController::AbilityInputTagPressed(FGameplayTag InputTag)
 
 void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 {
-    // LMB is a special input tag that is used for character movement
+
+    // Let the ability system know that the input was released
+    if (GetASC()) GetASC()->AbilityInputTagReleased(InputTag);
+    
+    // If not LMB, our job here is done. LMB also deals with character movement
     if (!InputTag.MatchesTagExact(FAuraGameplayTags::Get().InputTag_LMB))
     {
-        if (GetASC())
-        {
-            GetASC()->AbilityInputTagReleased(InputTag);
-        }
         return;
     }
 
-    if (bTargeting)
-    {
-        if (GetASC())
-        {
-            GetASC()->AbilityInputTagReleased(InputTag);
-        }
-    }
-    else
+    // This is the condition where the player is trying to use click-to-move
+    if (!bTargeting && !bShiftKeyDown)
     {
         const APawn* ControlledPawn  = GetPawn();
-        
-        // See if player attempted "click-to-move"
         if (FollowTime <= ShortPressedThreshold && ControlledPawn)
         {
             // Create a path to the click
@@ -150,7 +142,7 @@ void AAuraPlayerController::AbilityInputTagHeld(FGameplayTag InputTag)
     // Is player targeting an enemy while holding LMB?
     // If TRUE: Try to trigger the relative ability
     // If FALSE: Move
-    if (bTargeting)
+    if (bTargeting || bShiftKeyDown)
     {
         if (GetASC())
         {
@@ -212,6 +204,8 @@ void AAuraPlayerController::SetupInputComponent()
 
     UAuraInputComponent* AuraInputComponent = CastChecked<UAuraInputComponent>(InputComponent);
     AuraInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AAuraPlayerController::Move);
+    AuraInputComponent->BindAction(ShiftAction, ETriggerEvent::Started, this, &AAuraPlayerController::ShiftPressed);
+    AuraInputComponent->BindAction(ShiftAction, ETriggerEvent::Completed, this, &AAuraPlayerController::ShiftReleased);
     AuraInputComponent->BindAbilityAction(InputConfig, this, &ThisClass::AbilityInputTagPressed, &ThisClass::AbilityInputTagReleased, &ThisClass::AbilityInputTagHeld);
 }
 
