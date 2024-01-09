@@ -29,7 +29,7 @@ void UAuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLocati
 		const FVector SocketLocation = CombatInterface->GetCombatSocketLocation();
 		FRotator Rotation = (ProjectileTargetLocation - SocketLocation).Rotation();
 		// Keep the flight path horizontal to the ground
-		Rotation.Pitch = 0.f;
+		// Rotation.Pitch = 0.f;
 		
 		FTransform SpawnTransform;
 		SpawnTransform.SetLocation(SocketLocation);
@@ -39,7 +39,7 @@ void UAuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLocati
 			ProjectileClass,
 			SpawnTransform,
 			GetOwningActorFromActorInfo(),
-			Cast<APawn>(GetOwningActorFromActorInfo()),
+			Cast<APawn>(GetAvatarActorFromActorInfo()),
 			ESpawnActorCollisionHandlingMethod::AlwaysSpawn
 		);
 

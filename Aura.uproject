@@ -13,8 +13,7 @@
 				"GameplayAbilities",
 				"UMG",
 				"CoreUObject",
-				"EnhancedInput",
-				"MotionWarping"
+				"EnhancedInput"
 			]
 		}
 	],
