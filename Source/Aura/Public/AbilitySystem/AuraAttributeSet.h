@@ -194,6 +194,15 @@ public:
 	UFUNCTION()
 	void OnRep_Mana(const FGameplayAttributeData& OldMana) const;
 
+	// ----------------------------------------------------------------------------------------------------------------
+	// Meta Attributes
+	// - Server only attributes that do not need to be replicated
+	// ----------------------------------------------------------------------------------------------------------------
+	UPROPERTY(BlueprintReadOnly, Category = "Meta Attributes")
+	FGameplayAttributeData IncomingDamage;
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, IncomingDamage);
+	
+
 private:
 
 	void SetEffectProperties(const struct FGameplayEffectModCallbackData &Data, FEffectProperties& Props) const;
