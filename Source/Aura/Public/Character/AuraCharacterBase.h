@@ -22,12 +22,14 @@ class AURA_API AAuraCharacterBase : public ACharacter, public IAbilitySystemInte
 public:
 
 	AAuraCharacterBase();
-
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
-
 	UAttributeSet* GetAttributeSet() const;
 
 	virtual UAnimMontage* GetHitReactMontage_Implementation() const override;
+	virtual void Die() override;
+
+	UFUNCTION(NetMulticast, Reliable)
+	virtual void MulticastHandleDeath();
 
 protected:
 
