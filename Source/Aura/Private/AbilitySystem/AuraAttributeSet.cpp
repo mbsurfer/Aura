@@ -8,6 +8,7 @@
 #include "Net/UnrealNetwork.h"
 #include "AuraGameplayTags.h"
 #include "Interaction/CombatInterface.h"
+#include "Player/AuraPlayerController.h"
 
 UAuraAttributeSet::UAuraAttributeSet()
 {
@@ -111,6 +112,19 @@ void UAuraAttributeSet::SetEffectProperties(const FGameplayEffectModCallbackData
     }
 }
 
+void UAuraAttributeSet::ShowFloatingText(const FEffectProperties& Props, float Damage)
+{
+    // Only show damage numbers if the target is not the source
+    if (Props.Source.Character != Props.Target.Character)
+    {
+        // This line is addressed in a future lesson. Lesson 162.
+        if (AAuraPlayerController* PC = Cast<AAuraPlayerController>(Props.Source.Controller))
+        {
+            PC->ShowDamageNumber(Damage, Props.Target.Character);
+        }
+    }
+}
+
 void UAuraAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData &Data)
 {
     Super::PostGameplayEffectExecute(Data);
@@ -122,12 +136,14 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffectMo
     if (Data.EvaluatedData.Attribute == GetHealthAttribute())
     {
         SetHealth(FMath::Clamp(GetHealth(), 0.f, GetMaxHealth()));
-        UE_LOG(LogTemp, Warning, TEXT("Changed Health on %s, Health : %f"), *Props.Target.AvatarActor->GetName(), GetHealth());
+        // UE_LOG(LogTemp, Warning, TEXT("Changed Health on %s, Health : %f"), *Props.Target.AvatarActor->GetName(), GetHealth());
     }
     if (Data.EvaluatedData.Attribute == GetManaAttribute())
     {
         SetMana(FMath::Clamp(GetMana(), 0.f, GetMaxMana()));
     }
+
+    // Handle incoming damage
     if (Data.EvaluatedData.Attribute == GetIncomingDamageAttribute())
     {
         const float LocalIncomingDamage = GetIncomingDamage();
@@ -153,6 +169,8 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffectMo
                 Props.Target.ASC->TryActivateAbilitiesByTag(HitReactTags);
             }
         }
+
+        ShowFloatingText(Props, LocalIncomingDamage);
     }
 }
 

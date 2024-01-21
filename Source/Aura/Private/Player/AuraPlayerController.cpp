@@ -13,6 +13,8 @@
 #include "Components/SplineComponent.h"
 #include "Input/AuraInputComponent.h"
 #include "Interaction/EnemyInterface.h"
+#include "GameFramework/Character.h"
+#include "UI/Widget/DamageTextComponent.h"
 
 AAuraPlayerController::AAuraPlayerController()
 {
@@ -25,6 +27,19 @@ void AAuraPlayerController::PlayerTick(float DeltaTime)
 	Super::PlayerTick(DeltaTime);
     CursorTrace();
     AutoRun();
+}
+
+void AAuraPlayerController::ShowDamageNumber_Implementation(float DamageAmount, ACharacter* TargetCharacter)
+{
+    if (IsValid(TargetCharacter) && DamageTextComponentClass)
+    {
+        UDamageTextComponent* DamageTextComponent = NewObject<UDamageTextComponent>(TargetCharacter, DamageTextComponentClass);
+        DamageTextComponent->RegisterComponent();
+        DamageTextComponent->AttachToComponent(TargetCharacter->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
+        DamageTextComponent->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
+        DamageTextComponent->SetDamageText(DamageAmount);
+        
+    }
 }
 
 void AAuraPlayerController::AutoRun()
