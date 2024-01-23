@@ -30,7 +30,7 @@ UOverlayWidgetController* UAuraAbilitySystemLibrary::GetOverlayWidgetController(
     return nullptr;
 }
 
-//todo: this function repeat a lot of code from GetOverlayWidgetController(). maybe we can write a helper function that builds the controller params?
+//todo: this function repeats a lot of code from GetOverlayWidgetController(). maybe we can write a helper function that builds the controller params?
 UAttributeMenuWidgetController* UAuraAbilitySystemLibrary::GetAttributeMenuWidgetController(const UObject* WorldContextObject)
 {
     if (APlayerController* PC =  UGameplayStatics::GetPlayerController(WorldContextObject, 0))
@@ -46,16 +46,12 @@ UAttributeMenuWidgetController* UAuraAbilitySystemLibrary::GetAttributeMenuWidge
             return AuraHUD->GetAttributeWidgetController(WidgetControllerParams);
         }
     }
-
     return nullptr;
 }
 
 void UAuraAbilitySystemLibrary::InitializeDefaultAttributes(const UObject* WorldContextObject, ECharacterClass CharacterClass, float Level, UAbilitySystemComponent* ASC)
 {
-    AAuraGameModeBase* AuraGameMode = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(WorldContextObject));
-    if (AuraGameMode == nullptr) return;
-
-    UCharacterClassInfo* CharacterClassInfo = AuraGameMode->CharacterClassInfo;
+    UCharacterClassInfo* CharacterClassInfo = GetCharacterClassInfo(WorldContextObject);
     FCharacterClassDefaultInfo ClassDefaultInfo = CharacterClassInfo->GetClassDefaultInfo(CharacterClass);
 
     // Make sure that we add a SOURCE object to our effect handle, some effects will reference the source object
@@ -76,11 +72,15 @@ void UAuraAbilitySystemLibrary::InitializeDefaultAttributes(const UObject* World
 
 void UAuraAbilitySystemLibrary::GiveStartupAbilities(const UObject* WorldContextObject, UAbilitySystemComponent* ASC)
 {
-    const AAuraGameModeBase* AuraGameMode = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(WorldContextObject));
-    if (AuraGameMode == nullptr) return;
-
-    for (TSubclassOf<UGameplayAbility> AbilityClass : AuraGameMode->CharacterClassInfo->CommonAbilities)
+    UCharacterClassInfo* CharacterClassInfo = GetCharacterClassInfo(WorldContextObject);
+    for (const TSubclassOf<UGameplayAbility> AbilityClass : CharacterClassInfo->CommonAbilities)
     {
         ASC->GiveAbility(FGameplayAbilitySpec(AbilityClass, 1));
     }
+}
+
+UCharacterClassInfo* UAuraAbilitySystemLibrary::GetCharacterClassInfo(const UObject* WorldContextObject)
+{
+    const AAuraGameModeBase* AuraGameMode = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(WorldContextObject));
+    return (AuraGameMode == nullptr) ? nullptr : AuraGameMode->CharacterClassInfo;
 }
