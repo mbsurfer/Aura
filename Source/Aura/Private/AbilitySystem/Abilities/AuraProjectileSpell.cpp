@@ -5,6 +5,7 @@
 
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
+#include "ActorReferencesUtils.h"
 #include "Actor/AuraProjectile.h"
 #include "Interaction/CombatInterface.h"
 #include "AuraGameplayTags.h"
@@ -48,7 +49,26 @@ void UAuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLocati
 
 		// Add our gameplay effect to the projectile via the spec handle
 		const UAbilitySystemComponent* SourceASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetAvatarActorFromActorInfo());
-		const FGameplayEffectSpecHandle SpecHandle = SourceASC->MakeOutgoingSpec(DamageEffectClass, GetAbilityLevel(), SourceASC->MakeEffectContext());
+
+		// In lesson:149, we discuss how we can pass additional information using the EffectContextHandle
+		FGameplayEffectContextHandle EffectContextHandle = SourceASC->MakeEffectContext();
+
+		// SetAbility() sets the following member variables:
+		// - AbilityInstanceNotReplicated
+		// - AbilityCDO
+		// - AbilityLevel
+		EffectContextHandle.SetAbility(this);
+		EffectContextHandle.AddSourceObject(Projectile);
+
+		TArray<TWeakObjectPtr<AActor>> Actors;
+		Actors.Add(Projectile);
+		EffectContextHandle.AddActors(Actors);
+
+		FHitResult HitRestult;
+		HitRestult.Location = ProjectileTargetLocation;
+		EffectContextHandle.AddHitResult(HitRestult);
+		
+		const FGameplayEffectSpecHandle SpecHandle = SourceASC->MakeOutgoingSpec(DamageEffectClass, GetAbilityLevel(), EffectContextHandle);
 
 		const FAuraGameplayTags GameplayTags = FAuraGameplayTags::Get();
 		const float ScaledDamage = Damage.GetValueAtLevel(GetAbilityLevel());
