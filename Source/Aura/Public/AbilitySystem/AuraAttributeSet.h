@@ -41,7 +41,7 @@ struct FEffectProperties
 
 	FEffectProperties() {}
 
-	FGameplayEffectContextHandle EffectContexthandle;
+	FGameplayEffectContextHandle EffectContextHandle;
 
 	UPROPERTY()
 	FEffectActorProperties Source;
@@ -207,6 +207,6 @@ private:
 
 	void SetEffectProperties(const struct FGameplayEffectModCallbackData &Data, FEffectProperties& Props) const;
 
-	void ShowFloatingText(const FEffectProperties& Props, float Damage);
+	void ShowFloatingText(const FEffectProperties& Props, float Damage, bool bIsBlockedHit, bool bIsCriticalHit) const;
 
 };

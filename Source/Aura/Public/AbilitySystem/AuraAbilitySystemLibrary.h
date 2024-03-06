@@ -34,4 +34,20 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category="AuraAbilitySystermLibrary|CharacterClassDefaults")
 	static UCharacterClassInfo* GetCharacterClassInfo(const UObject* WorldContextObject);
+
+	UFUNCTION(BlueprintPure, Category="AuraAbilitySystermLibrary|GameplayEffects")
+	static bool IsBlockedHit(const FGameplayEffectContextHandle& EffectContextHandel);
+
+	UFUNCTION(BlueprintPure, Category="AuraAbilitySystermLibrary|GameplayEffects")
+	static bool IsCriticalHit(const FGameplayEffectContextHandle& EffectContextHandel);
+
+	/*
+	 * UPARAM(ref) is used to let the Blueprint know that the parameter is meant to be an input parameter rather than an output parameter.
+	 * This is useful when you want to modify the original value of the parameter within the function and have that change persist outside of the function.
+	 */
+	UFUNCTION(BlueprintCallable, Category="AuraAbilitySystermLibrary|GameplayEffects")
+	static void SetIsBlockedHit(UPARAM(ref) FGameplayEffectContextHandle& EffectContextHandel, bool bIsBlockedHit);
+
+	UFUNCTION(BlueprintCallable, Category="AuraAbilitySystermLibrary|GameplayEffects")
+	static void SetIsCriticalHit(UPARAM(ref) FGameplayEffectContextHandle& EffectContextHandel, bool bIsCriticalHit);
 };

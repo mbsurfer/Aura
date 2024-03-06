@@ -7,6 +7,7 @@
 #include "GameplayEffectExtension.h"
 #include "Net/UnrealNetwork.h"
 #include "AuraGameplayTags.h"
+#include "AbilitySystem/AuraAbilitySystemLibrary.h"
 #include "Interaction/CombatInterface.h"
 #include "Player/AuraPlayerController.h"
 
@@ -78,10 +79,10 @@ void UAuraAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Ou
 
 void UAuraAttributeSet::SetEffectProperties(const FGameplayEffectModCallbackData &Data, FEffectProperties& Props) const
 {
-    Props.EffectContexthandle = Data.EffectSpec.GetContext();
+    Props.EffectContextHandle = Data.EffectSpec.GetContext();
 
     // Source = causer of the effect
-    Props.Source.ASC = Props.EffectContexthandle.GetOriginalInstigatorAbilitySystemComponent();
+    Props.Source.ASC = Props.EffectContextHandle.GetOriginalInstigatorAbilitySystemComponent();
     if (IsValid(Props.Source.ASC) && Props.Source.ASC->AbilityActorInfo.IsValid() && Props.Source.ASC->AbilityActorInfo->AvatarActor.IsValid())
     {
         Props.Source.AvatarActor = Props.Source.ASC->AbilityActorInfo->AvatarActor.Get();
@@ -112,7 +113,7 @@ void UAuraAttributeSet::SetEffectProperties(const FGameplayEffectModCallbackData
     }
 }
 
-void UAuraAttributeSet::ShowFloatingText(const FEffectProperties& Props, float Damage)
+void UAuraAttributeSet::ShowFloatingText(const FEffectProperties& Props, float Damage, bool bIsBlockedHit, bool bIsCriticalHit) const
 {
     // Only show damage numbers if the target is not the source
     if (Props.Source.Character != Props.Target.Character)
@@ -170,7 +171,9 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffectMo
             }
         }
 
-        ShowFloatingText(Props, LocalIncomingDamage);
+        const bool bBlockHit = UAuraAbilitySystemLibrary::IsBlockedHit(Props.EffectContextHandle);
+        const bool bCriticalHit = UAuraAbilitySystemLibrary::IsCriticalHit(Props.EffectContextHandle);
+        ShowFloatingText(Props, LocalIncomingDamage, bBlockHit, bCriticalHit);
     }
 }
 

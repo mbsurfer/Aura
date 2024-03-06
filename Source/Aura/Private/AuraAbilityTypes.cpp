@@ -35,7 +35,7 @@ bool FAuraGameplayEffectContext::NetSerialize(FArchive& Ar, UPackageMap* Map, bo
 		{
 			RepBits |= 1 << 6;
 		}
-		if (bIsBlockedIt)
+		if (bIsBlockedHit)
 		{
 			RepBits |= 1 << 7;
 		}
@@ -89,7 +89,7 @@ bool FAuraGameplayEffectContext::NetSerialize(FArchive& Ar, UPackageMap* Map, bo
 	}
 	if (RepBits & (1 << 7))
 	{
-		Ar << bIsBlockedIt;
+		Ar << bIsBlockedHit;
 	}
 	if (RepBits & (1 << 8))
 	{
